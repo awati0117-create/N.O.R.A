@@ -26,7 +26,7 @@ jobs:
           channel: 'stable'
 
       - name: Generate Android Template
-        run: flutter create . --platforms=android --org=com.nora.app
+        run: flutter create . --platforms=android --org=com.nora.app --project-name nora_app
 
       - name: Install Dependencies
         run: flutter pub get
