@@ -1,0 +1,432 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const NoraApp());
+}
+
+class NoraApp extends StatefulWidget {
+  const NoraApp({Key? key}) : super(key: key);
+
+  @override
+  State<NoraApp> createState() => _NoraAppState();
+}
+
+class _NoraAppState extends State<NoraApp> {
+  Color _accentColor = const Color(0xFF00F0FF);
+  final Color _bgColor = const Color(0xFF050B14);
+
+  String _aiEngine = "Local (Qwen 2.5 1.5B)";
+  String _hardwareStatus = "Docked (Wi-Fi Markas)";
+  String _systemPrompt = "You are N.O.R.A., a polite and highly intelligent Cyberpunk AI Assistant.";
+
+  final List<Map<String, String>> _chatMessages = [
+    {
+      "sender": "N.O.R.A.",
+      "text": "Sistem N.O.R.A. Online. Selamat datang, Komandan. Dua kunci otentikasi terverifikasi.",
+      "raw": "Sistem N.O.R.A. Online. Selamat datang, Komandan. [RELAY_ALL:ON] [RGB:STANDBY]"
+    }
+  ];
+
+  final TextEditingController _inputController = TextEditingController();
+
+  void _processMessage(String userText) {
+    if (userText.trim().isEmpty) return;
+
+    setState(() {
+      _chatMessages.add({"sender": "User", "text": userText, "raw": userText});
+    });
+
+    _inputController.clear();
+
+    Future.delayed(const Duration(milliseconds: 800), () {
+      String rawResponse = "";
+      
+      if (userText.toLowerCase().contains("lampu") || userText.toLowerCase().contains("nyalakan")) {
+        rawResponse = "Menyalakan daya utama kamar dan skenario LED RGB. [RELAY1:ON] [RGB:CYAN_PULSE]";
+      } else if (userText.toLowerCase().contains("mati")) {
+        rawResponse = "Mematikan sistem penerangan. [RELAY1:OFF] [RGB:OFF]";
+      } else {
+        rawResponse = "Perintah diterima. Mengolah data via $_aiEngine. [RGB:PROCESSING]";
+      }
+
+      String cleanText = _parseAndStripTags(rawResponse);
+
+      setState(() {
+        _chatMessages.add({
+          "sender": "N.O.R.A.",
+          "text": cleanText,
+          "raw": rawResponse
+        });
+      });
+    });
+  }
+
+  String _parseAndStripTags(String rawText) {
+    RegExp exp = RegExp(r'\[[A-Z0-9_]+:[A-Z0-9_]+\]');
+    Iterable<Match> matches = exp.allMatches(rawText);
+
+    for (final Match match in matches) {
+      String tag = match.group(0)!;
+      _executeHardwareCommand(tag);
+    }
+
+    return rawText.replaceAll(exp, '').trim();
+  }
+
+  void _executeHardwareCommand(String tag) {
+    debugPrint("⚡ [HARDWARE EXECUTE]: $tag via $_hardwareStatus");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'N.O.R.A. HUD',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: _bgColor,
+        colorScheme: ColorScheme.dark(
+          primary: _accentColor,
+          surface: const Color(0xFF0D1B2A),
+        ),
+      ),
+      home: DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0xFF0A111E),
+            elevation: 4,
+            title: Row(
+              children: [
+                Icon(Icons.memory, color: _accentColor),
+                const SizedBox(width: 10),
+                Text(
+                  "N.O.R.A. v2.5",
+                  style: TextStyle(
+                    color: _accentColor,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                    fontFamily: 'monospace',
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: _accentColor.withOpacity(0.5)),
+                  borderRadius: BorderRadius.circular(12),
+                  color: _accentColor.withOpacity(0.1),
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 4,
+                      backgroundColor: _hardwareStatus.contains("Docked") ? Colors.green : Colors.orange,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _hardwareStatus.split(" ")[0],
+                      style: const TextStyle(fontSize: 11, fontFamily: 'monospace'),
+                    ),
+                  ],
+                ),
+              )
+            ],
+            bottom: TabBar(
+              indicatorColor: _accentColor,
+              labelColor: _accentColor,
+              unselectedLabelColor: Colors.white38,
+              tabs: const [
+                Tab(icon: Icon(Icons.terminal), text: "HUD CHAT"),
+                Tab(icon: Icon(Icons.grid_view), text: "[MODULES]"),
+                Tab(icon: Icon(Icons.settings), text: "CONFIG"),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              _buildHudChatTab(),
+              _buildModulesTab(),
+              _buildLiveConfigTab(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHudChatTab() {
+    return Column(
+      children: [
+        Container(
+          height: 120,
+          margin: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0A111E),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: _accentColor.withOpacity(0.3)),
+          ),
+          child: Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _accentColor.withOpacity(0.08),
+                    border: Border.all(color: _accentColor, width: 2),
+                  ),
+                ),
+                Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: _accentColor.withOpacity(0.2),
+                  ),
+                ),
+                Icon(Icons.mic, color: _accentColor, size: 28),
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            itemCount: _chatMessages.length,
+            itemBuilder: (context, index) {
+              final msg = _chatMessages[index];
+              final isNora = msg["sender"] == "N.O.R.A.";
+              return Align(
+                alignment: isNora ? Alignment.centerLeft : Alignment.centerRight,
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.all(12),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isNora ? const Color(0xFF0D1B2A) : _accentColor.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isNora ? _accentColor.withOpacity(0.4) : _accentColor,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        msg["sender"]!,
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: _accentColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'monospace',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        msg["text"]!,
+                        style: const TextStyle(fontSize: 14, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(12),
+          color: const Color(0xFF0A111E),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _inputController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    hintText: "Ketik perintah ke N.O.R.A...",
+                    hintStyle: const TextStyle(color: Colors.white30),
+                    filled: true,
+                    fillColor: const Color(0xFF050B14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: _accentColor.withOpacity(0.3)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25),
+                      borderSide: BorderSide(color: _accentColor),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton(
+                icon: Icon(Icons.send, color: _accentColor),
+                onPressed: () => _processMessage(_inputController.text),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModulesTab() {
+    final modules = [
+      {"name": "Notification Music & Lyrics", "icon": Icons.music_note, "status": "Ready"},
+      {"name": "Morning Briefing Trigger", "icon": Icons.wb_sunny, "status": "Active (06:00-09:00)"},
+      {"name": "PIR Motion Sensor", "icon": Icons.sensors, "status": "Monitoring"},
+      {"name": "ST7789 Visual Sync", "icon": Icons.desktop_windows, "status": "Connected"},
+      {"name": "AI Vision Safe-Module", "icon": Icons.remove_red_eye, "status": "Cloud Mode Only"},
+      {"name": "Smart Calendar & Alarm", "icon": Icons.alarm, "status": "Synced"},
+    ];
+
+    return GridView.builder(
+      padding: const EdgeInsets.all(12),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 1.3,
+      ),
+      itemCount: modules.length,
+      itemBuilder: (context, index) {
+        final mod = modules[index];
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF0D1B2A),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: _accentColor.withOpacity(0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(mod["icon"] as IconData, color: _accentColor, size: 28),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    mod["name"] as String,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    mod["status"] as String,
+                    style: TextStyle(fontSize: 10, color: _accentColor.withOpacity(0.7)),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLiveConfigTab() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        _buildSectionTitle("🎨 DYNAMIC UI ACCENT COLOR"),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _colorPaletteButton(const Color(0xFF00F0FF), "Cyan"),
+            _colorPaletteButton(const Color(0xFFFF0055), "Red"),
+            _colorPaletteButton(const Color(0xFF00FF66), "Lime"),
+            _colorPaletteButton(const Color(0xFFFFB700), "Amber"),
+            _colorPaletteButton(const Color(0xFFA000FF), "Purple"),
+          ],
+        ),
+        const SizedBox(height: 24),
+
+        _buildSectionTitle("🧠 MULTI-BRAIN AI ENGINE"),
+        DropdownButton<String>(
+          value: _aiEngine,
+          isExpanded: true,
+          dropdownColor: const Color(0xFF0D1B2A),
+          style: TextStyle(color: _accentColor, fontWeight: FontWeight.bold),
+          items: ["Local (Qwen 2.5 1.5B)", "Cloud (Gemini API)", "Cloud (DeepSeek)"]
+              .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+              .toList(),
+          onChanged: (val) {
+            if (val != null) setState(() => _aiEngine = val);
+          },
+        ),
+        const SizedBox(height: 24),
+
+        _buildSectionTitle("🔌 HARDWARE & NETWORK CONFIG"),
+        ListTile(
+          title: const Text("Hardware Mode"),
+          subtitle: Text(_hardwareStatus),
+          trailing: IconButton(
+            icon: Icon(Icons.swap_horiz, color: _accentColor),
+            onPressed: () {
+              setState(() {
+                _hardwareStatus = _hardwareStatus.contains("Docked")
+                    ? "Pocket (BLE Standalone)"
+                    : "Docked (Wi-Fi Markas)";
+              });
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        _buildSectionTitle("📜 SYSTEM PROMPT (LIVE)"),
+        const SizedBox(height: 8),
+        TextField(
+          maxLines: 3,
+          style: const TextStyle(fontSize: 12, color: Colors.white70),
+          decoration: InputDecoration(
+            border: OutlineInputBorder(borderSide: BorderSide(color: _accentColor)),
+            filled: true,
+            fillColor: const Color(0xFF0D1B2A),
+          ),
+          controller: TextEditingController(text: _systemPrompt),
+          onChanged: (val) => _systemPrompt = val,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: TextStyle(
+        color: _accentColor,
+        fontWeight: FontWeight.bold,
+        fontSize: 12,
+        letterSpacing: 1.2,
+        fontFamily: 'monospace',
+      ),
+    );
+  }
+
+  Widget _colorPaletteButton(Color color, String label) {
+    bool isSelected = _accentColor == color;
+    return GestureDetector(
+      onTap: () => setState(() => _accentColor = color),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 18,
+            backgroundColor: color,
+            child: isSelected ? const Icon(Icons.check, color: Colors.black, size: 18) : null,
+          ),
+          const SizedBox(height: 4),
+          Text(label, style: const TextStyle(fontSize: 10, color: Colors.white60)),
+        ],
+      ),
+    );
+  }
+}
