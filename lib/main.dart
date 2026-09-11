@@ -68,14 +68,14 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   // System States
-  String _activeAiEngine = 'Qwen 2.5 (Local)'; 
-  String _aiState = 'STANDBY'; 
+  String _activeAiEngine = 'Qwen 2.5 (Local)'; // 'Qwen 2.5 (Local)' or 'Gemini (Cloud)'
+  String _aiState = 'STANDBY'; // STANDBY, LISTENING, THINKING, SPEAKING
   bool _isBleConnected = true;
   bool _isWifiConnected = true;
   int _batteryLevel = 88;
 
   // Dynamic Quick Action Buttons
-  final List<Map<String, String>> _quickActions = [
+  List<Map<String, String>> _quickActions = [
     {'name': 'LOCK ROOM', 'command': 'ESP_RELAY_LOCK', 'color': 'red'},
     {'name': 'PARTY RGB', 'command': 'ESP_RGB_PARTY', 'color': 'purple'},
     {'name': 'NIGHT MODE', 'command': 'SYS_NIGHT_MODE', 'color': 'amber'},
@@ -231,10 +231,22 @@ class _MainScreenState extends State<MainScreen> {
           selectedFontSize: 10,
           unselectedFontSize: 10,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.terminal, size: 20), label: 'HUD CHAT'),
-            BottomNavigationBarItem(icon: Icon(Icons.psychology, size: 20), label: 'BRAIN & VOICE'),
-            BottomNavigationBarItem(icon: Icon(Icons.developer_board, size: 20), label: 'HARDWARE'),
-            BottomNavigationBarItem(icon: Icon(Icons.apps, size: 20), label: 'MODULES & LOGS'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.terminal, size: 20),
+              label: 'HUD CHAT',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.psychology, size: 20),
+              label: 'BRAIN & VOICE',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.developer_board, size: 20),
+              label: 'HARDWARE',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.apps, size: 20),
+              label: 'MODULES & LOGS',
+            ),
           ],
         ),
       ),
@@ -285,7 +297,7 @@ class _HudChatTabState extends State<HudChatTab> {
     },
     {
       'sender': 'N.O.R.A.',
-      'text': 'Temperature: 28.4°C. PIR Sensor: Idle. ESP32 Node connected via BLE.',
+      'text': 'Temperature: 28.4掳C. PIR Sensor: Idle. ESP32 Node connected via BLE.',
       'time': '19:41'
     },
   ];
@@ -388,6 +400,7 @@ class _HudChatTabState extends State<HudChatTab> {
           ),
           child: Row(
             children: [
+              // Arc Reactor Pulse Animation Simulator
               AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 width: 46,
@@ -423,8 +436,7 @@ class _HudChatTabState extends State<HudChatTab> {
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                  // PERBAIKAN: Mengganti CrossAlignment menjadi CrossAxisAlignment
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAlignment.start,
                   children: [
                     Text(
                       'AI STATE: ${widget.aiState}',
@@ -464,8 +476,7 @@ class _HudChatTabState extends State<HudChatTab> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
-            // PERBAIKAN: Mengganti MainAlignment menjadi MainAxisAlignment
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAlignment.spaceBetween,
             children: [
               Text(
                 'DYNAMIC QUICK ACTIONS',
@@ -555,7 +566,7 @@ class _HudChatTabState extends State<HudChatTab> {
                     ),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAlignment.start,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -568,5 +579,4 @@ class _HudChatTabState extends State<HudChatTab> {
                               fontSize: 10,
                             ),
                           ),
-                          // PERBAIKAN: Menambahkan kurung penutup yang hilang dan melanjutkan kode yang terpotong
-                    
+    
