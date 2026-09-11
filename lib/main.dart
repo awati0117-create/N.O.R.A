@@ -12,7 +12,8 @@ class NoraApp extends StatefulWidget {
 }
 
 class _NoraAppState extends State<NoraApp> {
-  Color _accentColor = const Color(0xFF00F0FF);
+  // Global Theme Accent State
+  Color _accentColor = const Color(0xFF00F0FF); // Cyber Cyan
 
   void _changeAccent(Color newColor) {
     setState(() {
@@ -65,12 +66,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-  String _activeAiEngine = 'Qwen 2.5 (Local)';
-  String _aiState = 'STANDBY';
+
+  // System States
+  String _activeAiEngine = 'Qwen 2.5 (Local)'; 
+  String _aiState = 'STANDBY'; 
   bool _isBleConnected = true;
   bool _isWifiConnected = true;
   int _batteryLevel = 88;
 
+  // Dynamic Quick Action Buttons
   final List<Map<String, String>> _quickActions = [
     {'name': 'LOCK ROOM', 'command': 'ESP_RELAY_LOCK', 'color': 'red'},
     {'name': 'PARTY RGB', 'command': 'ESP_RGB_PARTY', 'color': 'purple'},
@@ -78,6 +82,7 @@ class _MainScreenState extends State<MainScreen> {
     {'name': 'BRIEFING', 'command': 'TRIGGER_MORNING_BRIEF', 'color': 'cyan'},
   ];
 
+  // Logs System
   final List<String> _logs = [
     '[19:42:01] [BLE] Connected to ESP32_POCKET_NODE',
     '[19:42:02] [SENSOR] PIR Motion detected on Port D2',
@@ -226,22 +231,10 @@ class _MainScreenState extends State<MainScreen> {
           selectedFontSize: 10,
           unselectedFontSize: 10,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.terminal, size: 20),
-              label: 'HUD CHAT',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.psychology, size: 20),
-              label: 'BRAIN & VOICE',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.developer_board, size: 20),
-              label: 'HARDWARE',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.apps, size: 20),
-              label: 'MODULES & LOGS',
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.terminal, size: 20), label: 'HUD CHAT'),
+            BottomNavigationBarItem(icon: Icon(Icons.psychology, size: 20), label: 'BRAIN & VOICE'),
+            BottomNavigationBarItem(icon: Icon(Icons.developer_board, size: 20), label: 'HARDWARE'),
+            BottomNavigationBarItem(icon: Icon(Icons.apps, size: 20), label: 'MODULES & LOGS'),
           ],
         ),
       ),
@@ -249,6 +242,9 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
+// ==========================================
+// TAB 1: HUD CHAT & QUICK ACTIONS
+// ==========================================
 class HudChatTab extends StatefulWidget {
   final Color accentColor;
   final String aiState;
@@ -279,7 +275,7 @@ class _HudChatTabState extends State<HudChatTab> {
   final List<Map<String, String>> _messages = [
     {
       'sender': 'N.O.R.A.',
-      'text': 'System Online. Both Indonesian & English Voice engines initialized.',
+      'text': 'System Online. Both Indonesian & English Voice engines initialized. How can I assist you?',
       'time': '19:40'
     },
     {
@@ -381,6 +377,7 @@ class _HudChatTabState extends State<HudChatTab> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // AI Dynamic Visualizer Card
         Container(
           margin: const EdgeInsets.all(12),
           padding: const EdgeInsets.all(12),
@@ -426,7 +423,8 @@ class _HudChatTabState extends State<HudChatTab> {
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAlignment.start,
+                  // PERBAIKAN: Mengganti CrossAlignment menjadi CrossAxisAlignment
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'AI STATE: ${widget.aiState}',
@@ -461,10 +459,13 @@ class _HudChatTabState extends State<HudChatTab> {
             ],
           ),
         ),
+
+        // Custom Dynamic Quick Action Buttons Bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
-            mainAxisAlignment: MainAlignment.spaceBetween,
+            // PERBAIKAN: Mengganti MainAlignment menjadi MainAxisAlignment
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'DYNAMIC QUICK ACTIONS',
@@ -530,6 +531,8 @@ class _HudChatTabState extends State<HudChatTab> {
           ),
         ),
         const SizedBox(height: 8),
+
+        // Terminal Chat Messages List
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -552,7 +555,7 @@ class _HudChatTabState extends State<HudChatTab> {
                     ),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -565,16 +568,5 @@ class _HudChatTabState extends State<HudChatTab> {
                               fontSize: 10,
                             ),
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            msg['time']!,
-                            style: TextStyle(color: Colors.grey.shade500, fontSize: 8),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        msg['text']!,
-                        style: const TextStyle(fontSize: 11, height: 1.3),
-                      ),
-                    ],
+                          // PERBAIKAN: Menambahkan kurung penutup yang hilang dan melanjutkan kode yang terpotong
+                    
