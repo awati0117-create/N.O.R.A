@@ -1,5 +1,5 @@
-name: nora_app
-description: "N.O.R.A. Cyberpunk AI Assistant HUD"
+name: nora_system
+description: "N.O.R.A. System Mobile HUD & Hardware Bridge"
 publish_to: 'none'
 version: 1.0.0+1
 
