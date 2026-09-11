@@ -27,8 +27,8 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Re-create Android Template (Fix Unsupported Gradle)
-        run: flutter create --platforms=android .
+      - name: Re-create Android Template
+        run: flutter create --platforms=android --project-name nora_system .
 
       - name: Install dependencies
         run: flutter pub get
