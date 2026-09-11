@@ -12,8 +12,7 @@ class NoraApp extends StatefulWidget {
 }
 
 class _NoraAppState extends State<NoraApp> {
-  // Global Theme Accent State
-  Color _accentColor = const Color(0xFF00F0FF); // Cyber Cyan
+  Color _accentColor = const Color(0xFF00F0FF);
 
   void _changeAccent(Color newColor) {
     setState(() {
@@ -66,23 +65,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
-
-  // System States
-  String _activeAiEngine = 'Qwen 2.5 (Local)'; // 'Qwen 2.5 (Local)' or 'Gemini (Cloud)'
-  String _aiState = 'STANDBY'; // STANDBY, LISTENING, THINKING, SPEAKING
+  String _activeAiEngine = 'Qwen 2.5 (Local)';
+  String _aiState = 'STANDBY';
   bool _isBleConnected = true;
   bool _isWifiConnected = true;
   int _batteryLevel = 88;
 
-  // Dynamic Quick Action Buttons
-  List<Map<String, String>> _quickActions = [
+  final List<Map<String, String>> _quickActions = [
     {'name': 'LOCK ROOM', 'command': 'ESP_RELAY_LOCK', 'color': 'red'},
     {'name': 'PARTY RGB', 'command': 'ESP_RGB_PARTY', 'color': 'purple'},
     {'name': 'NIGHT MODE', 'command': 'SYS_NIGHT_MODE', 'color': 'amber'},
     {'name': 'BRIEFING', 'command': 'TRIGGER_MORNING_BRIEF', 'color': 'cyan'},
   ];
 
-  // Logs System
   final List<String> _logs = [
     '[19:42:01] [BLE] Connected to ESP32_POCKET_NODE',
     '[19:42:02] [SENSOR] PIR Motion detected on Port D2',
@@ -254,9 +249,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-// ==========================================
-// TAB 1: HUD CHAT & QUICK ACTIONS
-// ==========================================
 class HudChatTab extends StatefulWidget {
   final Color accentColor;
   final String aiState;
@@ -287,7 +279,7 @@ class _HudChatTabState extends State<HudChatTab> {
   final List<Map<String, String>> _messages = [
     {
       'sender': 'N.O.R.A.',
-      'text': 'System Online. Both Indonesian & English Voice engines initialized. How can I assist you?',
+      'text': 'System Online. Both Indonesian & English Voice engines initialized.',
       'time': '19:40'
     },
     {
@@ -297,7 +289,7 @@ class _HudChatTabState extends State<HudChatTab> {
     },
     {
       'sender': 'N.O.R.A.',
-      'text': 'Temperature: 28.4掳C. PIR Sensor: Idle. ESP32 Node connected via BLE.',
+      'text': 'Temperature: 28.4°C. PIR Sensor: Idle. ESP32 Node connected via BLE.',
       'time': '19:41'
     },
   ];
@@ -389,7 +381,6 @@ class _HudChatTabState extends State<HudChatTab> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // AI Dynamic Visualizer Card
         Container(
           margin: const EdgeInsets.all(12),
           padding: const EdgeInsets.all(12),
@@ -400,7 +391,6 @@ class _HudChatTabState extends State<HudChatTab> {
           ),
           child: Row(
             children: [
-              // Arc Reactor Pulse Animation Simulator
               AnimatedContainer(
                 duration: const Duration(milliseconds: 500),
                 width: 46,
@@ -436,7 +426,7 @@ class _HudChatTabState extends State<HudChatTab> {
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAlignment.start,
                   children: [
                     Text(
                       'AI STATE: ${widget.aiState}',
@@ -471,12 +461,10 @@ class _HudChatTabState extends State<HudChatTab> {
             ],
           ),
         ),
-
-        // Custom Dynamic Quick Action Buttons Bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAlignment.spaceBetween,
             children: [
               Text(
                 'DYNAMIC QUICK ACTIONS',
@@ -542,8 +530,6 @@ class _HudChatTabState extends State<HudChatTab> {
           ),
         ),
         const SizedBox(height: 8),
-
-        // Terminal Chat Messages List
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -566,7 +552,7 @@ class _HudChatTabState extends State<HudChatTab> {
                     ),
                   ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAlignment.start,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -578,4 +564,17 @@ class _HudChatTabState extends State<HudChatTab> {
                               fontWeight: FontWeight.bold,
                               fontSize: 10,
                             ),
-                     
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            msg['time']!,
+                            style: TextStyle(color: Colors.grey.shade500, fontSize: 8),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        msg['text']!,
+                        style: const TextStyle(fontSize: 11, height: 1.3),
+                      ),
+                    ],
